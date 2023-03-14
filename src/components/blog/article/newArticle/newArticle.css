@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;400&display=swap');
+
+.newArticle-section {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+
+.newArticle-title {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.newArticle-text-editor {
+    margin-top: 20px;
+    margin-bottom: 50px;
+    /* height: 300px; */
+}
+
+/* .quill {
+    height: 300px;
+} */
+
+.ql-align-center {
+    justify-content: center;
+    text-align: center;
+}
+
+.quill {
+    height: 300px;
+}
+
+.ql-editor {
+    font-family: 'Raleway';
+}
+
+.newArticle-save-btn-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.newArticle-save-btn {
+    margin-top: 20px !important;
+}
+
+@media (max-width: 575.98px) {
+    .newArticle-save-btn-div {
+        margin-top: 90px;
+    }
+}
+
+/* // Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .newArticle-save-btn-div {
+        margin-top: 70px;
+    }
+}
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .newArticle-save-btn-div{
+        margin-top: 50px;
+    }
+}
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {}
+
+/* // X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}
+
+/* // XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) {}

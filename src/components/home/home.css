@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@1&family=Raleway:wght@100;400&display=swap');
+
+.contenedor {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.index-title {
+    font-family: 'Raleway';
+    font-family: 'Gentium Book Basic', serif;
+    font-family: 'Labrada', serif;
+    font-family: 'Raleway', sans-serif;
+    font-size: 96px;
+    color: #ffffff;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.index-title {
+    display: block;
+    font-family: monospace;
+    white-space: nowrap;
+    border-right: 4px solid;
+    width: 21ch;
+
+    animation: typing 2s steps(21), blink .5s infinite step-end alternate;
+    overflow: hidden;
+}
+
+.index-title>h1 {
+    margin: 0px;
+}
+
+@keyFrames typing {
+
+    from {
+        width: 0
+    }
+}
+
+@keyFrames blink {
+    50% {
+        border-color: transparent
+    }
+}
+
+
+/* .index-title {
+    font-family: 'Raleway';
+    font-family: 'Gentium Book Basic', serif;
+    font-family: 'Labrada', serif;
+    font-family: 'Raleway', sans-serif;
+    font-size: 96px;
+    color: #ffffff;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.line {
+    position: absolute;
+    top: 50%;
+    width: 16em;
+    margin: 0 auto;
+    border-right: 2px solid rgba(255, 255, 255, 0.75);
+    font-size: 180%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;transform: translateY(-50%);
+
+    font-family: 'Gentium Book Basic', serif;
+    font-family: 'Labrada', serif;
+    font-family: 'Raleway', sans-serif;
+    font-size: 80px;
+    color: #ffffff;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    top: 35%;
+    left: 20%;
+    -webkit-text-stroke: 2px black;
+    color: transparent; 
+}
+
+.anim-typewriter {
+    animation: typewriter 4s steps(36) 1s 1 normal both,
+    blinkTextCursor 500ms steps(17) infinite normal;
+}
+
+@keyframes typewriter {
+    from {
+          width: 0;
+    }
+    to {
+          width: 13em;
+    }
+}
+
+@keyframes blinkTextCursor {
+    from {
+          border-right-color: rgba(255, 255, 255, 0.75);
+    }
+    to {
+          border-right-color: transparent;
+    }
+} */
+
+
+/* // Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .index-title {
+        font-family: 'Raleway';
+        font-family: 'Gentium Book Basic', serif;
+        font-family: 'Labrada', serif;
+        font-family: 'Raleway', sans-serif;
+        font-size: 15px;
+        color: #ffffff;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .index-title {
+        font-size: 20px;
+    }
+}
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .index-title {
+
+        font-size: 80px;
+
+    }
+}
+
+/* // X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .index-title {
+
+        font-size: 96px;
+
+    }
+}
+
+/* // XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) {
+    .index-title {
+
+        font-size: 96px;
+
+    }
+}

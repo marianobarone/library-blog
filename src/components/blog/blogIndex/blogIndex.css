@@ -1,0 +1,23 @@
+.blog-card {
+    padding: 50px;
+}
+
+.blog-card-title > h1 {
+    font-size: 36px;
+    font-weight: bold;
+    border-bottom: 4px solid #8eafd8;
+    width: 50%;
+    padding-bottom: 15px;
+}
+
+.blog-card-body {
+    line-height: 1.5;
+    font-size: 20px;
+    text-align: justify;
+}
+
+.blog-index-card {
+    /* display: flex; */
+    justify-content: center;
+    margin-bottom: 40px !important;
+}

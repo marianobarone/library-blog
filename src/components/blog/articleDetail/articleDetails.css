@@ -1,0 +1,23 @@
+.articleDetails {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.articleBody {
+    font-size: 20px;
+    text-align: justify;
+    line-height: 1.5;
+}
+
+.capitalLetter {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.articleComments>h3 {
+    font-weight: bold;
+    border-bottom: 4px solid #8eafd8;
+    width: 30%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}

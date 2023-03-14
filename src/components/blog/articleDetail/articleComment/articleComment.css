@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;400&display=swap');
+
+.dateComment, .nameComment {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.leaveCommentArea > h3 {
+    font-weight: bold;
+    border-bottom: 4px solid #8eafd8;
+    width: 30%;
+    padding-bottom: 15px;
+}
+
+.leave-comment-text-area {
+    background-color: transparent;
+    font-family: 'Raleway';
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 10px;
+    max-width: 100%;
+    max-height: 80px;
+    height: 80px;
+    resize: none;
+    overflow: auto !important;
+}
+
+.comments-list {
+    max-height: 200px;
+    overflow: auto;
+    margin-bottom: 50px;
+}
