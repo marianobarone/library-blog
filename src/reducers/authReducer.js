@@ -6,7 +6,8 @@ export const authReducer = (state, action) => {
             return{
                 ...state,
                 token: action.payload.token,
-                UID: action.payload.UID
+                user: action.payload.user,
+                status: 'authenticated',
             }
         case types.auth.logIn:
             return {
@@ -27,7 +28,7 @@ export const authReducer = (state, action) => {
                 ...state,
                 status: 'non-authenticated',
                 token: null,
-                UID: null
+                user: null
             }
         case types.auth.addErrorLogin:
             return {

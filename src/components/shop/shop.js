@@ -13,9 +13,13 @@ export default function Shop() {
         <section id='shop'>
             <div className='shop-card'>
 
-                <div className='shop-card-title'>
-                    <h1>Comprar</h1>
-                </div>
+                <Grid container className="section-title">
+                    <Grid item md={12}>
+                        <div className='shop-card-title'>
+                            <h1>Comprar</h1>
+                        </div>
+                    </Grid>
+                </Grid>
 
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid className='portadaShop' container spacing={2}>

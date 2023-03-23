@@ -9,8 +9,6 @@ import { LandingScreen } from '../components/landing/LandingScreen'
 import { Login } from '../login/login'
 import { SignUpScreen } from '../components/register/SignUpScreen'
 
-
-
 export const AuthRouter = () => {
     return (
         <Router>

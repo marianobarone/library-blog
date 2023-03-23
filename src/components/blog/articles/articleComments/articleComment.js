@@ -1,17 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './articleComment.css'
-import { API_URL } from '../../../../services/settings'
-import axios from 'axios'
-
+import { useParams } from 'react-router-dom';
+import { BlogContext } from '../../../../global/context/blogContext';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import saveComment from '../../../../services/saveComment.js'
-import { useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-import { BlogContext } from '../../../../global/context/blogContext';
 
 const notify = (toast, text) => toast(text);
 
@@ -47,23 +44,6 @@ export default function ArticleComment({ comments }) {
         }
         console.log("Resultado agregar nuevo comentario" + JSON.stringify(result));
         console.log("Resultado agregar nuevo comentario" + result);
-
-        // const apiURL = `${API_URL}/articles/${id}/comment`;
-        // await axios.post(apiURL, newComment)
-        //     .then(response => {
-        //         console.log(response)
-        //         // let nuevoArray = [...arrayComentarios, newComment];
-        //         // setArrayComentarios(nuevoArray);
-        //         setArrayComentarios([...arrayComentarios, newComment])
-        //         notify("Gracias por su comentario!");
-        //         console.log(arrayComentarios)
-        //         setAuthor("");
-        //         setComment("");
-        //         // setUser({ articles: response.data }, { usuario: "Usuario no encontrado" })
-        //     })
-        //     .catch(error => {
-        //         console.log(error.response)
-        //     });
     }
 
     return (
@@ -78,15 +58,13 @@ export default function ArticleComment({ comments }) {
 
                             <p>{comment.body}</p>
 
-                            <hr />
+                            <hr className='comment-divider'/>
                         </div>
                     ))}
             </div>
 
-
             <div className='leaveCommentArea'>
                 <h3>Deja tu comentario</h3>
-
                 <Box
                     component="form"
                     sx={{
@@ -112,10 +90,6 @@ export default function ArticleComment({ comments }) {
                     <Button variant="contained" onClick={() => saveComment({ id, author, comment })}>Publicar comentario</Button>
                 </Stack>
             </div>
-
-
         </div>
-
-
     )
 }

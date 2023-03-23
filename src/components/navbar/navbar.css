@@ -39,7 +39,7 @@
     height: 100%;
 } */
 
-a {
+/* a {
     position: relative;
     color: #000;
     text-decoration: none;
@@ -64,4 +64,4 @@ a {
   
   a:hover::before {
     transform: scaleX(1);
-  }
+  } */

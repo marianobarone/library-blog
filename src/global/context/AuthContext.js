@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 import { authReducer } from '../../reducers/authReducer';
 import { types } from "../../data/types";
 import axios from "axios";
@@ -14,12 +14,22 @@ export const AuthContext = createContext(authInitialState);
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, authInitialState)
 
-    const setCredentials = (token, uid) => {
+    useEffect(() => {
+        const loggedUser = window.localStorage.getItem("loggedUser");
+
+        if (loggedUser) {
+            const user = JSON.parse(loggedUser);
+            setCredentials(user);
+        }
+    }, [])
+
+    const setCredentials = (user) => {
         dispatch({
             type: types.auth.setCredentials,
             payload: {
-                UID: uid,
-                token: token
+                // UID: uid,
+                token: user.token,
+                user: user
             }
         })
     }
@@ -40,6 +50,7 @@ export const AuthProvider = ({ children }) => {
                         token: user.token
                     }
                 })
+                window.localStorage.setItem("loggedUser", JSON.stringify(user));
                 result = response;
             })
             .catch((error) => {
@@ -55,14 +66,23 @@ export const AuthProvider = ({ children }) => {
         return result;
     }
 
+    const signOut = () => {
+        window.localStorage.removeItem("loggedUser");
+        dispatch({
+            type: types.auth.signOut
+        })
+    }
+
     const authInfo = {
         ...state,
         setCredentials,
-        loginWithEmail
+        loginWithEmail,
+        signOut
     }
 
     return (
         <AuthContext.Provider value={authInfo}>
+            {/* // <AuthContext.Provider value={{ ...state, setCredentials, loginWithEmail }}> */}
             {children}
         </AuthContext.Provider>
     )

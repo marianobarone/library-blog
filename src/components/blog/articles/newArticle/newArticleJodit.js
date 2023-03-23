@@ -1,10 +1,10 @@
 import React, { useState, useRef, useMemo, useEffect, useContext } from "react";
-import JoditEditor from "jodit-react";
-import { Button, Container, TextField } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import axios from 'axios'
-import { BlogContext } from "../../../../global/context/blogContext";
+import JoditEditor from "jodit-react";
 import FileInput from "./insertImgHeader";
+import { useNavigate } from "react-router-dom";
+import { BlogContext } from "../../../../global/context/blogContext";
+import { Button, Container, TextField } from "@mui/material";
 
 export default function App() {
     const [titulo, setTitulo] = useState('');
@@ -59,7 +59,6 @@ export default function App() {
             .post(
                 "https://api.imgbb.com/1/upload?key=21ddb91d5b4c4cbd3e3dbd98a09bd2a3",
                 formData,
-                //   { headers: { Authorization: `Bearer ${context.user.token}` } }
             )
             .then((response) => {
                 console.log(response.data.data.url);
@@ -84,7 +83,6 @@ export default function App() {
             let x = `{IMG_${i}}`
             console.log(`{IMG_${i}}`);
             let h = `<img src="${datosImg[i].nuevaUrl}" ${datosImg[i].width}/>`
-            // <img src="https://i.ibb.co/jk6wZf1/fb2a5028bb95.jpg" width=" 689">
             console.log(h);
 
             contentReemplazado = contentReemplazado.replace(x, h);
@@ -102,12 +100,7 @@ export default function App() {
             body: contentReemplazado,
         };
 
-
-
-
         addNewArticle(nuevoArticulo);
-        // navigate("/");
-
     }
 
     const changeImgHeaderUrl = (url, imgToShow) => {
@@ -120,22 +113,13 @@ export default function App() {
         return result;
     }
 
-
-
-    const config = {
+    const joditConfig = {
         readonly: false,
         uploader: {
             insertImageAsBase64URI: true,
         },
-
-
         maxHeight: 400,
         askBeforePasteHTML: false,
-        // uploader: {
-        //     url: '/manage/upload',  //your upload api url
-        //     insertImageAsBase64URI: false, //not inster base64
-        // }
-        // placeholder: 'Start typings...'
     };
 
     return (
@@ -143,7 +127,6 @@ export default function App() {
             <div>
                 <h1>Nuevo Artículo</h1>
             </div>
-
 
             <TextField id="standard-basic" label="Titulo" variant="standard" className='newArticle-title' value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
@@ -158,7 +141,7 @@ export default function App() {
                         <JoditEditor
                             ref={editor}
                             value={content}
-                            config={config}
+                            config={joditConfig}
                             tabIndex={1} // tabIndex of textarea
 
                             onBlur={(newContent) => {
@@ -187,80 +170,3 @@ export default function App() {
         </Container>
     );
 }
-
-/*
-        <Container className='newArticle-section'>
-            <div>
-                <h1>Nuevo Artículo</h1>
-            </div>
-
-
-            <TextField id="standard-basic" label="Titulo" variant="standard" className='newArticle-title' value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-            />
-
-            <div className='newArticle-text-editor'>
-                {useMemo(
-                    () => (
-                        <JoditEditor
-                            ref={editor}
-                            value={content}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-
-                            onBlur={(newContent) => {
-                                // setContent(newContent.target.innerHTML);
-                            }}
-                            onChange={(newContent) => {
-                                setContent(newContent);
-                            }}
-                        />
-                    ),
-                    []
-                )
-                }
-            </div>
-
-            <div className='newArticle-save-btn-div'>
-                <Button className='newArticle-save-btn' variant="contained" onClick={() => { saveArticle() }}>Guardar</Button>
-            </div>
-            <div>Preview HTML: {content}</div>
-            <div>
-                Preview Formatted:{" "}
-                <span dangerouslySetInnerHTML={{ __html: content }} />
-            </div>
-        </Container>
-*/
-
-/*
-        <div>
-            {useMemo(
-                () => (
-                    <JoditEditor
-                        ref={editor}
-                        value={content}
-                        config={config}
-                        tabIndex={1} // tabIndex of textarea
-
-                        onBlur={(newContent) => {
-                            // setContent(newContent.target.innerHTML);
-                        }}
-                        onChange={(newContent) => {
-                            setContent(newContent);
-                        }}
-                    />
-                ),
-                []
-            )
-            }
-            <div>Preview HTML: {content}</div>
-            <div>
-                Preview Formatted:{" "}
-                <span dangerouslySetInnerHTML={{ __html: content }} />
-            </div>
-
-            <div className='newArticle-save-btn-div'>
-                <Button className='newArticle-save-btn' variant="contained" onClick={() => { saveArticle() }}>Guardar</Button>
-            </div>
-        </div >
-*/

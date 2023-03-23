@@ -2,7 +2,7 @@
     padding: 50px;
 }
 
-.blog-card-title > h1 {
+.blog-card-title>h1 {
     font-size: 36px;
     font-weight: bold;
     border-bottom: 4px solid #8eafd8;
@@ -20,4 +20,12 @@
     /* display: flex; */
     justify-content: center;
     margin-bottom: 40px !important;
+}
+
+.card-blog-body>.article-date {
+    text-align: right;
+}
+
+.img-card-blog-index {
+    height: 200px !important;
 }

@@ -1,8 +1,9 @@
-import React, { createContext, useEffect, useReducer } from 'react'
+import React, { createContext, useEffect, useState, useReducer, useContext } from 'react'
 import { BlogReducer } from '../../reducers/blogReducer';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { AuthContext } from './AuthContext';
 // const notify = () => toast("");
 const notify = (message, toastType) => toastType(message);
 
@@ -14,25 +15,43 @@ const blogInitialState = {
 }
 export const BlogContext = createContext(blogInitialState);
 
-
 export const BlogProvider = ({ children }) => {
     const [state, dispatch] = useReducer(BlogReducer, blogInitialState);
+    const { token } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        getArticles();
+        // setLoading(true)
+        // getAboutMe();
+        // getArticles();
+        cargarDatos();
     }, [])
 
-    const getArticles = async () => {
-        await axios.get("http://localhost:3001/articles")
+    const cargarDatos = async () => {
+        await getAboutMe();
+        await getArticles();
+
+        setLoading(false);
+    }
+    
+
+    const loadingFalse = () => {
+        setLoading(false);
+    }
+
+    const getAboutMe = async () => {
+        await axios.get("http://localhost:3001/aboutMe")
             .then((response) => {
                 let data = response.data
                 dispatch({
-                    type: "getArticles",
+                    type: "getAboutMe",
                     payload: {
-                        articles: data
+                        aboutMe: data
                     }
                 })
+                // setLoading((JSON.stringify(blogInitialState.aboutMe) == '{}') || JSON.stringify(blogInitialState.articles.length == 0));
+                // setLoading(false);
             })
             .catch((error) => {
                 dispatch({
@@ -44,12 +63,61 @@ export const BlogProvider = ({ children }) => {
             });
     }
 
+    const getArticles = async () => {
+        await axios.get("http://localhost:3001/articles")
+            .then((response) => {
+                let data = response.data
+                dispatch({
+                    type: "getArticles",
+                    payload: {
+                        articles: data
+                    }
+                })
+                // setLoading((JSON.stringify(blogInitialState.aboutMe) == '{}') || JSON.stringify(blogInitialState.articles.length == 0));
+                // setLoading(false);
+            })
+            .catch((error) => {
+                dispatch({
+                    type: "addErrorMessage",
+                    payload: {
+                        errorMessage: error
+                    }
+                })
+            });
+    }
+
+    const updateAboutMe = async function (aboutMe, id) {
+        await axios
+            .put(
+                `http://localhost:3001/aboutMe/${id}`,
+                aboutMe,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            .then((response) => {
+                console.log(response);
+                // dispatch({
+                //     type: "updateArticles",
+                //     payload: {
+                //         articles: response.data
+                //     }
+                // })
+                getAboutMe();
+                notify("AboutMe actualizado correctamente", toast.success)
+                navigate("/")
+            })
+            .catch((error) => {
+                console.log(error.response);
+                notify("Error! No se pudo actualizar AboutMe, vuelva a intentarlo más tarde", toast.error)
+                // notify(error.response.data.error, toast.error)
+            });
+    }
+
     const addNewArticle = async function addNewArticle(article) {
         await axios
             .post(
                 "http://localhost:3001/articles",
                 article,
-                //   { headers: { Authorization: `Bearer ${context.user.token}` } }
+                { headers: { Authorization: `Bearer ${token}` } }
             )
             .then((response) => {
                 console.log(response);
@@ -83,13 +151,6 @@ export const BlogProvider = ({ children }) => {
                 //     }
                 // })
                 getArticles()
-
-                // setArrayComentarios([...arrayComentarios, newComment])
-                // notify("Gracias por su comentario!");
-                // console.log(arrayComentarios)
-                // setAuthor("");
-                // setComment("");
-                // setUser({ articles: response.data }, { usuario: "Usuario no encontrado" })
             })
             .catch(error => {
                 result = error;
@@ -99,11 +160,14 @@ export const BlogProvider = ({ children }) => {
         return result;
     };
 
-
     return (
         <BlogContext.Provider
             value={{
                 ...state,
+                loading,
+                setLoading,
+                updateAboutMe,
+                loadingFalse,
                 addNewArticle,
                 getArticles,
                 addNewComment

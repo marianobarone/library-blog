@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;400&display=swap');
 
-.dateComment, .nameComment {
+.dateComment,
+.nameComment {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.leaveCommentArea > h3 {
+.leaveCommentArea>h3 {
     font-weight: bold;
     border-bottom: 4px solid #8eafd8;
     width: 30%;
@@ -23,10 +24,25 @@
     height: 80px;
     resize: none;
     overflow: auto !important;
+    border: 0.5px solid #8eafd8;
+    border-radius: 4px;
 }
 
 .comments-list {
-    max-height: 200px;
+    max-height: 215px;
     overflow: auto;
     margin-bottom: 50px;
+}
+
+/* .articleComment {
+    padding-top: 10px;
+    padding-bottom: 10px;
+} */
+
+.comment-divider {
+    height: 1px;
+    background-color: #8eafd8;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    border: 1px;
 }
