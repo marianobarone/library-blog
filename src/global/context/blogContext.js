@@ -41,7 +41,8 @@ export const BlogProvider = ({ children }) => {
     }
 
     const getAboutMe = async () => {
-        await axios.get("http://localhost:3001/aboutMe")
+        // await axios.get("http://localhost:3001/aboutMe")
+        await axios.get(`https://api-library-blog.onrender.com/aboutMe/`)
             .then((response) => {
                 let data = response.data
                 dispatch({
@@ -64,7 +65,7 @@ export const BlogProvider = ({ children }) => {
     }
 
     const getArticles = async () => {
-        await axios.get("http://localhost:3001/articles")
+        await axios.get(`https://api-library-blog.onrender.com/articles/`)
             .then((response) => {
                 let data = response.data
                 dispatch({
@@ -89,7 +90,7 @@ export const BlogProvider = ({ children }) => {
     const updateAboutMe = async function (aboutMe, id) {
         await axios
             .put(
-                `http://localhost:3001/aboutMe/${id}`,
+                `https://api-library-blog.onrender.com/aboutMe/${id}`,
                 aboutMe,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -115,7 +116,7 @@ export const BlogProvider = ({ children }) => {
     const addNewArticle = async function addNewArticle(article) {
         await axios
             .post(
-                "http://localhost:3001/articles",
+                `https://api-library-blog.onrender.com/articles/`,
                 article,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -139,7 +140,7 @@ export const BlogProvider = ({ children }) => {
     const addNewComment = async function (idArticulo, comentario) {
         // const apiURL = `${API_URL}/articles/${idArticulo}/comment`;
         let result;
-        const apiURL = `http://localhost:3001/articles/${idArticulo}/comment`;
+        const apiURL = `https://api-library-blog.onrender.com/articles/${idArticulo}/comment/`;
         await axios.post(apiURL, comentario)
             .then(response => {
                 result = response;
