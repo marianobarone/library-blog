@@ -21,3 +21,9 @@
     padding-top: 15px;
     padding-bottom: 15px;
 }
+
+.articleHeader-img {
+    height: 300px !important;
+    width: 100%;
+    /* object-fit: cover; */
+}

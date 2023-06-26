@@ -43,7 +43,7 @@ const FileInput = ({ headerImg, setHeaderImg }) => {
             {headerImg && selectedImage && (
                 <Box mt={2} textAlign="center">
                     <div>Imagen Preview:</div>
-                    <img src={headerImg} alt={selectedImage.name} height="200px" />
+                    <img src={headerImg} alt={selectedImage.name} height="200px" className="articleHeader-img"/>
                 </Box>
             )}
 

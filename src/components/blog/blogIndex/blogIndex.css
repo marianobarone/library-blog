@@ -29,3 +29,7 @@
 .img-card-blog-index {
     height: 200px !important;
 }
+
+.article-preview > h2{
+    font-size: 14px !important;
+}

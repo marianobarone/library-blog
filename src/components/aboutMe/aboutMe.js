@@ -17,8 +17,7 @@ export default function AboutMe() {
 
     return (
         <section id="aboutMe" name='aboutMe'>
-            <div className='aboutMe-card'>
-
+            <div className='aboutMe-card' data-aos="zoom-in">
                 <Grid container spacing={2} className="section-title">
                     <Grid item md={11} xs={10}>
                         <div className='aboutMe-card-title'>
@@ -28,9 +27,7 @@ export default function AboutMe() {
                     <Grid item md={1} xs={2} className="admin-button-div">
                         {user &&
                             <div>
-                                <ModalEditAboutMe
-                                    aboutMe={aboutMe}
-                                />
+                                <ModalEditAboutMe aboutMe={aboutMe} />
                             </div>
                         }
                     </Grid>
@@ -41,11 +38,11 @@ export default function AboutMe() {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={8}>
                                 <div className='articleBody'>
-                                    {parse(aboutMe?.body)}
+                                    {aboutMe?.body ? parse(aboutMe?.body) : "No data"}
                                 </div>
                             </Grid>
                             <Grid className="author-img" item xs={12} md={4}>
-                                <img src={aboutMe && aboutMe?.img} width="300" height="300"></img>
+                                <img src={aboutMe && aboutMe?.img} width="300" height="300" className='aboutMe-img'></img>
                             </Grid>
                         </Grid>
                     </Box>

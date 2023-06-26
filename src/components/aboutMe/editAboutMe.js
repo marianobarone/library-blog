@@ -6,16 +6,17 @@ import ImgInput from "./imgInput";
 import DefaultUser from '../../portadasWeb/defaultUser.png'
 import JoditEditor from "jodit-react";
 import PropTypes from 'prop-types';
+import { BlogContext } from "../../global/context/blogContext";
 import { styled } from '@mui/material/styles';
 import { Grid, Tooltip } from "@mui/material";
-import { BlogContext } from "../../global/context/blogContext";
-import Button from '@mui/material/Button';
+import { LoadingButton } from "@mui/lab";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import toast from 'react-hot-toast';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -70,12 +71,14 @@ const joditConfig = {
 
 export default function ModalEditAboutMe({ aboutMe }) {
     const editor = useRef(null);
+    const notify = (toast, text) => toast(text);
     const { updateAboutMe } = useContext(BlogContext)
     const [open, setOpen] = useState(false);
     const [aboutMeActual, setAboutMeActual] = useState(aboutMe?.body);
     const [imgAboutMe, setImgAboutMe] = useState();
     const [showHeaderImg, setShowHeaderImg] = useState(aboutMe?.img ? aboutMe.img : DefaultUser);
     const [enableSaveBtn, setEnableSaveBtn] = useState(false);
+    const [loadingBtn, setLoadingBtn] = useState(false);
 
     useEffect(() => {
         // const cambioAboutMe = aboutMeActual != aboutMe.body;
@@ -104,8 +107,17 @@ export default function ModalEditAboutMe({ aboutMe }) {
             img: imgUrl,
         }
 
-        updateAboutMe(data, aboutMe._id);
-        handleClose();
+        setLoadingBtn(true);
+        let result = await updateAboutMe(data, aboutMe._id);
+
+        if (result.status != "200") {
+            setLoadingBtn(false);
+            notify(toast.error, "Error! No se pudo actualizar AboutMe, vuelva a intentarlo más tarde");
+        } else {
+            setLoadingBtn(false);
+            handleClose();
+            notify(toast.success, "AboutMe actualizado correctamente");
+        }
     };
 
     const changeImgHeaderUrl = (url, imgToShow) => {
@@ -186,15 +198,20 @@ export default function ModalEditAboutMe({ aboutMe }) {
                 </DialogContent>
 
                 <DialogActions sx={{ justifyContent: "center" }}>
-                    <Button
-                        className=''
-                        disabled={!enableSaveBtn}
-                        variant="contained"
-                        onClick={() => { saveAboutMe() }}
-                    >
-                        Guardar
-                    </Button>
-
+                    <Grid container sx={{ justifyContent: "center" }}>
+                        <Grid item md={2} >
+                            <LoadingButton
+                                onClick={() => { saveAboutMe() }}
+                                loading={loadingBtn}
+                                // loadingPosition="end"
+                                disabled={!enableSaveBtn}
+                                variant="contained"
+                                fullWidth
+                            >
+                                {loadingBtn ? "Guardando..." : "Guardar"}
+                            </LoadingButton>
+                        </Grid>
+                    </Grid>
                 </DialogActions>
             </BootstrapDialog>
         </div>

@@ -49,6 +49,17 @@
     }
 }
 
+.home-header {
+    /* display: flex; */
+    /* height: 200px; */
+}
+
+.home-header img {
+    /* max-height: 100%; */
+    /* max-width: 100%; */
+    /* object-fit: cover; */
+}
+
 
 /* .index-title {
     font-family: 'Raleway';

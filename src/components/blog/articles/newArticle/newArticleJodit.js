@@ -1,45 +1,73 @@
 import React, { useState, useRef, useMemo, useEffect, useContext } from "react";
+import './newArticle.css'
 import axios from 'axios'
 import JoditEditor from "jodit-react";
 import FileInput from "./insertImgHeader";
 import { useNavigate } from "react-router-dom";
 import { BlogContext } from "../../../../global/context/blogContext";
-import { Button, Container, TextField } from "@mui/material";
+import { Container, FormControl, FormHelperText, Grid, TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import toast from "react-hot-toast";
 
 export default function App() {
-    const [titulo, setTitulo] = useState('');
-    const [value, setValue] = useState('');
-    const editor = useRef(null);
-    const [content, setContent] = useState("");
-    const urlImagenes = []
-    const [pathImg, setpathImg] = useState([])
     const navigate = useNavigate();
+    const notify = (toast, text) => toast(text);
     const { articles, addNewArticle } = useContext(BlogContext)
+    const editor = useRef(null);
 
-    const [headerImg, setHeaderImg] = useState("");
+    const [titulo, setTitulo] = useState('');
+    const [headerImage, setHeaderImage] = useState("");
     const [showHeaderImg, setShowHeaderImg] = useState("");
+    const [bodyContent, setBodyContent] = useState("");
+    const [bodyImages, setBodyImages] = useState([])
+    const [loadingBtn, setLoadingBtn] = useState(false);
+    const [titleError, setTitleError] = useState("");
 
+    // const [value, setValue] = useState('');
+    const urlImagenes = []
+    const [bodyError, setBodyError] = useState("");
+
+    //cada vez que cambia el bodyContent, se va actualizando el valor de bodyImages donde se guardan todas las etiquetas img
     useEffect(() => {
-        setpathImg(content.match(/<img([\w\W]+?)>/g));
-        //content.replace(/<img[^>]*>/,"{img_1}");
-        console.log(pathImg)
-        console.log("URL img:" + headerImg)
-    }, [content, setHeaderImg])
+        setBodyImages(bodyContent.match(/<img([\w\W]+?)>/g));
+        //bodyContent.replace(/<img[^>]*>/,"{img_1}");
+        console.log(bodyImages)
+        console.log("URL img:" + headerImage)
+    }, [bodyContent, setHeaderImage])
+
+    function handleSubmit() {
+        setTitleError(titulo != "" ? "" : "Debe ingresar el titulo del articulo");
+
+        if (titulo != "") {
+            saveArticle();
+        }
+
+        setTimeout(() => {
+            setTitleError("");
+        }, 3000);
+    }
+
+    const changeImgHeaderUrl = (url, imgToShow) => {
+        setHeaderImage(url);
+        setShowHeaderImg(imgToShow);
+    }
 
     //tengo el STRING HTML SIN IMG 
     function reemplazarImgTag() {
-        let cantidadImg = pathImg.length;
-        let result = content;
+        let cantidadImg = bodyImages.length;
+        let result = bodyContent;
 
-        for (let index = 0; index < pathImg.length; index++) {
+        for (let index = 0; index < bodyImages.length; index++) {
             result = result.replace(/<img[^>]*>/, `{IMG_${index}}`);
         }
 
         return result;
     };
 
+
+
     function guardarImagenes() {
-        const imagenes = pathImg.map(item => (
+        const imagenes = bodyImages.map(item => (
             {
                 nuevaUrl: null,
                 path64: item.split("base64,")[1].split(" ")[0].slice(0, -1),
@@ -50,7 +78,7 @@ export default function App() {
         return imagenes;
     }
 
-    async function obtenerUrlImg(datos, url) {
+    async function saveImgImgbb(datos, url) {
         const formData = new FormData();
         formData.append("image", url ? url : datos.path64); // has to be named 'image'!
         let result;
@@ -72,27 +100,31 @@ export default function App() {
         return result;
     }
 
+
+
     async function saveArticle() {
+        let contentReemplazado = bodyContent;
+        if (bodyImages != null) {
+            contentReemplazado = reemplazarImgTag();
 
-        let contentReemplazado = reemplazarImgTag();
+            let datosImg = guardarImagenes();
 
-        let datosImg = guardarImagenes();
+            for (let i = 0; i < datosImg.length; i++) {
+                datosImg[i].nuevaUrl = await saveImgImgbb(datosImg[i], null);
+                let x = `{IMG_${i}}`
+                console.log(`{IMG_${i}}`);
+                let h = `<img src="${datosImg[i].nuevaUrl}" ${datosImg[i].width}/>`
+                console.log(h);
 
-        for (let i = 0; i < datosImg.length; i++) {
-            datosImg[i].nuevaUrl = await obtenerUrlImg(datosImg[i], null);
-            let x = `{IMG_${i}}`
-            console.log(`{IMG_${i}}`);
-            let h = `<img src="${datosImg[i].nuevaUrl}" ${datosImg[i].width}/>`
-            console.log(h);
-
-            contentReemplazado = contentReemplazado.replace(x, h);
+                contentReemplazado = contentReemplazado.replace(x, h);
+            }
         }
 
-        // console.log(content);
+        // console.log(bodyContent);
         // console.log(datosImg);
         // console.log(contentReemplazado);
 
-        const urlHeader = await obtenerHeaderImgUrl(headerImg);
+        const urlHeader = await obtenerHeaderImgUrl(headerImage);
 
         const nuevoArticulo = {
             title: titulo,
@@ -100,16 +132,24 @@ export default function App() {
             body: contentReemplazado,
         };
 
-        addNewArticle(nuevoArticulo);
+        setLoadingBtn(true);
+        let result = await addNewArticle(nuevoArticulo);
+
+        if (result.status != "200") {
+            setLoadingBtn(false);
+            notify(toast.error, "Error! No se pudo crear el articulo, vuelva a intentarlo más tarde");
+        }
+        else {
+            setLoadingBtn(false);
+            navigate("/#blog");
+            notify(toast.success, "Articulo creado correctamente");
+        }
     }
 
-    const changeImgHeaderUrl = (url, imgToShow) => {
-        setHeaderImg(url);
-        setShowHeaderImg(imgToShow);
-    }
+
 
     async function obtenerHeaderImgUrl(url) {
-        const result = await obtenerUrlImg(null, url);
+        const result = await saveImgImgbb(null, url);
         return result;
     }
 
@@ -124,13 +164,32 @@ export default function App() {
 
     return (
         <Container className='newArticle-section'>
-            <div>
-                <h1>Nuevo Artículo</h1>
-            </div>
 
-            <TextField id="standard-basic" label="Titulo" variant="standard" className='newArticle-title' value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-            />
+            <h1>Nuevo Artículo</h1>
+
+
+            <FormControl variant="standard" className="form-control-comment">
+                <TextField
+                    required
+                    label="Titulo"
+                    variant="standard"
+                    className='newArticle-title'
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                    error={Boolean(titleError)}
+                />
+                <FormHelperText
+                    error={Boolean(titleError)}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        // padding: "0 10px"
+                    }}
+                >
+                    <span>{titleError}</span>
+                </FormHelperText>
+            </FormControl>
+
             <div>
                 <FileInput headerImg={showHeaderImg} setHeaderImg={changeImgHeaderUrl} />
             </div>
@@ -140,15 +199,15 @@ export default function App() {
                     () => (
                         <JoditEditor
                             ref={editor}
-                            value={content}
+                            value={bodyContent}
                             config={joditConfig}
                             tabIndex={1} // tabIndex of textarea
 
                             onBlur={(newContent) => {
-                                // setContent(newContent.target.innerHTML);
+                                // setBodyContent(newContent.target.innerHTML);
                             }}
                             onChange={(newContent) => {
-                                setContent(newContent);
+                                setBodyContent(newContent);
                             }}
                         />
                     ),
@@ -158,14 +217,25 @@ export default function App() {
             </div>
 
             <div className='newArticle-save-btn-div'>
-                <Button className='newArticle-save-btn' variant="contained" onClick={() => { saveArticle() }}>
-                    Guardar
-                </Button>
+                <Grid container sx={{ justifyContent: "center" }}>
+                    <Grid item md={2} >
+                        <LoadingButton
+                            onClick={() => { handleSubmit() }}
+                            loading={loadingBtn}
+                            // loadingPosition="end"
+                            variant="contained"
+                            className='newArticle-save-btn'
+                            fullWidth
+                        >
+                            {loadingBtn ? "Guardando..." : "Guardar"}
+                        </LoadingButton>
+                    </Grid>
+                </Grid>
             </div>
-            <div>Preview HTML: {content}</div>
+            <div>Preview HTML: {bodyContent}</div>
             <div>
                 Preview Formatted:{" "}
-                <span dangerouslySetInnerHTML={{ __html: content }} />
+                <span dangerouslySetInnerHTML={{ __html: bodyContent }} />
             </div>
         </Container>
     );

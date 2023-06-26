@@ -1,31 +1,44 @@
 import React, { useContext, useState, useEffect } from 'react'
 import './articleDetails.css'
 import parse from 'html-react-parser';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BlogContext } from '../../../../global/context/blogContext';
+import { Button, IconButton } from '@mui/material';
 import Container from '@mui/material/Container';
 import ArticleComment from '../../articles/articleComments/articleComment'
-import DOMPurify from 'dompurify';
-import { Link } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { IconButton } from '@mui/material';
+import DeleteModal from '../deleteModal';
+import toast from 'react-hot-toast';
 
 export default function ArticleDetails() {
-    const location = useLocation();
+    const notify = (toast, text) => toast(text);
+    const navigate = useNavigate()
     let { id } = useParams();
-    const { articles } = useContext(BlogContext);
+    const { articles, deleteArticle } = useContext(BlogContext);
     console.log("Estos son los params:" + id);
     const articuloEncontrado = articles.find(a => a._id == id);
+    const [show, setShow] = useState(false);
 
-    const params = useParams();
-    console.log(params)
+    const deleteConfirmation = () => {
+        // setCommentForDelete(idComment);
+        setShow(true);
+    };
+
+    const handleDelete = async (id) => {
+        const result = await deleteArticle(id);
+
+        if (result.status == "200") {
+            notify(toast.success, "Articulo eliminado correctamente");
+            navigate("/#blog");
+        }
+        else { notify(toast.error, `ERROR! No se ha podido eliminar el artículo - ${result.response.statusText}`); }
+    }
 
     return (
         <div>
             <Container className='articleDetails'>
-                
+
                 <Link to='/#blog' className='text-primary text-4xl -ml-4 mt-2 fixed goBack-blog'>
                     <IconButton
                         aria-label="close"
@@ -41,8 +54,7 @@ export default function ArticleDetails() {
                     </IconButton>
                 </Link>
 
-                <img src={articuloEncontrado.headerImg}
-                    width="100%" height="300" className='object-cover' />
+                <img src={articuloEncontrado.headerImg} width="100%" height="300" className='articleHeader-img' />
 
                 <div className='articleTitle'>
                     <h1>{articuloEncontrado.title}</h1>
@@ -59,9 +71,24 @@ export default function ArticleDetails() {
                 <hr />
 
                 <div className='articleComments'>
-                    <h3>Comentarios</h3>
                     <ArticleComment comments={articuloEncontrado.comments} />
                 </div>
+
+                <Button
+                    onClick={() => deleteConfirmation()}
+                    variant="contained"
+                    color="error"
+                >
+                    Eliminar articulo
+                </Button>
+
+                <DeleteModal
+                    deleteFunction={() => handleDelete(id)}
+                    modalText={{ title: "Eliminar artículo", body: "Se va a eliminar el artículo seleccionado. ¿Está seguro?" }}
+                    show={show}
+                    setShow={(bool) => setShow(bool)}
+                />
+
             </Container>
         </div>
     )

@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { fontSize } from '@mui/system';
+import PaymentButton from './paymentButton';
 
 export default function Shop() {
     return (
@@ -27,6 +28,7 @@ export default function Shop() {
                             <img src={PortadaImg} width="300" height="500"></img>
 
                             <div className='shop-buttons'>
+                                <PaymentButton/>
                                 <Stack direction="row" spacing={2}>
                                     <Button variant="contained">Mercado Pago</Button>
                                     <Button variant="contained" href="#contained-buttons">

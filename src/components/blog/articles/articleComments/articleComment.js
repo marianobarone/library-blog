@@ -2,93 +2,150 @@ import React, { useContext, useEffect, useState } from 'react'
 import './articleComment.css'
 import { useParams } from 'react-router-dom';
 import { BlogContext } from '../../../../global/context/blogContext';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import { FormControl, FormHelperText, Grid, } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import TextField from '@mui/material/TextField';
-import saveComment from '../../../../services/saveComment.js'
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import CommentCard from './commentCard';
 
 const notify = (toast, text) => toast(text);
 
 export default function ArticleComment({ comments }) {
+    const { addNewComment } = useContext(BlogContext)
     let { id } = useParams();
     const [author, setAuthor] = useState("");
-    const [comment, setComment] = useState();
-    const [arrayComentarios, setArrayComentarios] = useState(comments);
-    console.log("Prueba de comment:" + comment)
-
-    const { addNewComment } = useContext(BlogContext)
+    const [comment, setComment] = useState("");
+    const [authorError, setAuthorError] = useState("");
+    const [commentError, setCommentError] = useState("");
+    const [loadingBtn, setLoadingBtn] = useState(false);
 
     useEffect(() => {
-        console.log("Value author: " + author)
-        console.log("Value cometanrio: " + comment)
-    }, [arrayComentarios])
+        // console.log("SE ACTUALIZA ARTICLE COMMENTS.JS " + JSON.stringify(comments));
+    }, [comments]);
+
+    const handleSubmit = () => {
+        setAuthorError(author != "" ? "" : "Debe ingresar su nombre");
+        setCommentError(comment != "" ? "" : "Debe ingresar un comentario");
+
+        if (author != "" && comment != "") {
+            saveComment({ id, author, comment });
+        }
+
+        setTimeout(() => {
+            setAuthorError("");
+            setCommentError("");
+        }, 3000);
+    };
 
     async function saveComment() {
-
         const newComment = {
             author: author,
             body: comment,
         };
 
+        setLoadingBtn(true);
         let result = await addNewComment(id, newComment);
+
         if (result.status == "200") {
             setAuthor("");
             setComment("");
             notify(toast.success, "Gracias por su comentario!")
+            setLoadingBtn(false);
         }
         else {
             notify(toast.error, "Error al intentar publicar su comentario!")
+            setLoadingBtn(false);
         }
         console.log("Resultado agregar nuevo comentario" + JSON.stringify(result));
         console.log("Resultado agregar nuevo comentario" + result);
-    }
+    };
+
 
     return (
         <div>
-            <div className='comments-list'>
-                {comments.length == 0 ?
-                    <p>No Existen comentarios</p> :
-                    comments && comments.map((comment, index) => (
-                        <div className='articleComment' key={comment._id}>
-                            <h5 className='dateComment'>{comment.date}</h5>
-                            <h4 className='nameComment'>{comment.author}</h4>
-
-                            <p>{comment.body}</p>
-
-                            <hr className='comment-divider'/>
-                        </div>
-                    ))}
-            </div>
-
             <div className='leaveCommentArea'>
                 <h3>Deja tu comentario</h3>
-                <Box
-                    component="form"
-                    sx={{
-                        '& > :not(style)': { my: 2, width: '25ch', },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                >
-                    <TextField id="standard-basic" label="Nombre*" variant="standard" value={author} onChange={e => setAuthor(e.target.value)} />
-                </Box>
 
-                <TextareaAutosize
-                    className='leave-comment-text-area'
-                    aria-label="empty textarea"
-                    minRows={5}
-                    placeholder="Escribe aquí tu comentario..."
-                    onChange={e => setComment(e.target.value)}
-                    value={comment}
-                    style={{ width: "100%" }}
-                />
+                <Grid container className="leaveComment-form">
+                    <Grid item md={12}>
+                        <FormControl variant="standard" className="form-control-comment">
+                            <TextField
+                                required
+                                label="Nombre"
+                                variant="standard"
+                                value={author}
+                                onChange={e => setAuthor(e.target.value)}
+                                error={Boolean(authorError)}
 
-                <Stack direction="row" spacing={2}>
-                    <Button variant="contained" onClick={() => saveComment({ id, author, comment })}>Publicar comentario</Button>
-                </Stack>
+                            />
+                            <FormHelperText
+                                error={Boolean(authorError)}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    // padding: "0 10px"
+                                }}
+                            >
+                                <span>{authorError}</span>
+                            </FormHelperText>
+                        </FormControl>
+                    </Grid>
+                    <Grid item md={12}>
+                        <FormControl error variant="standard" sx={{ width: "100%" }} className="form-control-comment">
+                            <TextField
+                                required
+                                id="outlined-textarea"
+                                label="Comentario"
+                                placeholder="Escribe aquí tu comentario..."
+                                onChange={e => setComment(e.target.value)}
+                                value={comment}
+                                error={Boolean(commentError)}
+                                multiline
+                                maxRows={2}
+                            />
+                            <FormHelperText
+                                error={Boolean(commentError)}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    // padding: "0 10px"
+                                }}
+                            >
+                                <span>{commentError}</span>
+                            </FormHelperText>
+                        </FormControl>
+                    </Grid>
+
+                </Grid>
+
+                <Grid container className="leaveComment-form">
+                    <Grid item md={3}>
+                        <LoadingButton
+                            onClick={() => handleSubmit({ id, author, comment })}
+                            loading={loadingBtn}
+                            // loadingIndicator="Publicando..."
+                            loadingPosition="end"
+                            startIcon={""}
+                            variant="contained"
+                            fullWidth
+                        >
+                            {loadingBtn ? "Publicando..." : "Publicar comentario"}
+                        </LoadingButton>
+                    </Grid>
+                </Grid>
+            </div>
+
+            <div className='articleComments'>
+                <h3>Comentarios</h3>
+                <div className='comments-list'>
+                    {comments.length == 0 ?
+                        <p>No Existen comentarios</p>
+                        :
+                        comments && comments.map((item, index) => (
+                            <CommentCard key={index} comment={item} />
+                        ))
+                    }
+                </div>
             </div>
         </div>
     )

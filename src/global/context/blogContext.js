@@ -34,15 +34,15 @@ export const BlogProvider = ({ children }) => {
 
         setLoading(false);
     }
-    
+
 
     const loadingFalse = () => {
         setLoading(false);
     }
 
     const getAboutMe = async () => {
-        // await axios.get("http://localhost:3001/aboutMe")
-        await axios.get(`https://api-library-blog.onrender.com/aboutMe/`)
+        await axios.get("http://localhost:3001/aboutMe")
+            // await axios.get(`https://api-library-blog.onrender.com/aboutMe/`)
             .then((response) => {
                 let data = response.data
                 dispatch({
@@ -65,7 +65,8 @@ export const BlogProvider = ({ children }) => {
     }
 
     const getArticles = async () => {
-        await axios.get(`https://api-library-blog.onrender.com/articles/`)
+        await axios.get("http://localhost:3001/articles")
+            // await axios.get(`https://api-library-blog.onrender.com/articles/`)
             .then((response) => {
                 let data = response.data
                 dispatch({
@@ -88,9 +89,11 @@ export const BlogProvider = ({ children }) => {
     }
 
     const updateAboutMe = async function (aboutMe, id) {
+        let result;
         await axios
             .put(
-                `https://api-library-blog.onrender.com/aboutMe/${id}`,
+                `http://localhost:3001/aboutMe/${id}`,
+                // `https://api-library-blog.onrender.com/aboutMe/${id}`,
                 aboutMe,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -102,21 +105,28 @@ export const BlogProvider = ({ children }) => {
                 //         articles: response.data
                 //     }
                 // })
+                result = response;
                 getAboutMe();
-                notify("AboutMe actualizado correctamente", toast.success)
-                navigate("/")
+                // notify("AboutMe actualizado correctamente", toast.success)
+                // navigate("/")
             })
             .catch((error) => {
                 console.log(error.response);
+                result = error.response;
                 notify("Error! No se pudo actualizar AboutMe, vuelva a intentarlo más tarde", toast.error)
                 // notify(error.response.data.error, toast.error)
             });
+
+        return result;
     }
 
     const addNewArticle = async function addNewArticle(article) {
+        let result;
+        setLoading(true);
         await axios
             .post(
-                `https://api-library-blog.onrender.com/articles/`,
+                `http://localhost:3001/articles`,
+                // `https://api-library-blog.onrender.com/articles/`,
                 article,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -129,18 +139,24 @@ export const BlogProvider = ({ children }) => {
                 //     }
                 // })
                 getArticles();
-                notify("Articulo creado correctamente", toast.success)
-                navigate("/")
+                result = response;
+                // notify("Articulo creado correctamente", toast.success)
+                // navigate("/")
             })
             .catch((error) => {
                 console.log(error.response);
+                result = error;
             });
+
+        setLoading(false);
+        return result;
     }
 
     const addNewComment = async function (idArticulo, comentario) {
         // const apiURL = `${API_URL}/articles/${idArticulo}/comment`;
         let result;
-        const apiURL = `https://api-library-blog.onrender.com/articles/${idArticulo}/comment/`;
+        const apiURL = `http://localhost:3001/articles/${idArticulo}/comment/`;
+        // const apiURL = `https://api-library-blog.onrender.com/articles/${idArticulo}/comment/`;
         await axios.post(apiURL, comentario)
             .then(response => {
                 result = response;
@@ -161,6 +177,81 @@ export const BlogProvider = ({ children }) => {
         return result;
     };
 
+    const deleteArticle = async (id) => {
+        let result;
+        setLoading(true);
+        await axios.delete(
+            `http://localhost:3001/articles/${id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+            .then(response => {
+                result = response;
+                console.log(response)
+                // dispatch({
+                //     type:"addComment",
+                //     payload: {
+                //         comment
+                //     }
+                // })
+                getArticles();
+                // navigate("/#blog");
+            })
+            .catch(error => {
+                result = error;
+                console.log(error.response)
+            });
+
+        setLoading(false);
+        return result;
+    }
+
+    const deleteComment = async (idArticle, idComment) => {
+        let result;
+        setLoading(true);
+        await axios.delete(
+            `http://localhost:3001/articles/${idArticle}/comment/${idComment}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+            .then(response => {
+                result = response;
+                console.log(response)
+                // dispatch({
+                //     type:"addComment",
+                //     payload: {
+                //         comment
+                //     }
+                // })
+                getArticles();
+            })
+            .catch(error => {
+                result = error;
+                console.log(error.response)
+            });
+        setLoading(false);
+        return result;
+    }
+
+    const updateComment = async (idArticle, comment) => {
+        let result;
+        // setLoading(true);
+        await axios.put(
+            `http://localhost:3001/articles/${idArticle}/comment/${comment._id}`,
+            comment,
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+            .then(response => {
+                result = response;
+                console.log(response)
+                getArticles();
+            })
+            .catch(error => {
+                result = error;
+                console.log(error.response)
+            });
+        // setLoading(false);
+        return result;
+    }
+
     return (
         <BlogContext.Provider
             value={{
@@ -171,7 +262,10 @@ export const BlogProvider = ({ children }) => {
                 loadingFalse,
                 addNewArticle,
                 getArticles,
-                addNewComment
+                addNewComment,
+                deleteArticle,
+                deleteComment,
+                updateComment
             }}>
             {children}
         </BlogContext.Provider>

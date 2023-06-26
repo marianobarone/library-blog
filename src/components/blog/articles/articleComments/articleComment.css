@@ -1,9 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;400&display=swap');
 
-.dateComment,
-.nameComment {
-    margin-top: 5px;
-    margin-bottom: 5px;
+
+.authorComment {
+    font-weight: bold;
+}
+
+.dateComment {
+    font-size: 14px;
+}
+
+.bodyComment {
+    margin-top: 10px;
 }
 
 .leaveCommentArea>h3 {
@@ -29,7 +36,7 @@
 }
 
 .comments-list {
-    max-height: 215px;
+    max-height: 317px;
     overflow: auto;
     margin-bottom: 50px;
 }
@@ -42,7 +49,96 @@
 .comment-divider {
     height: 1px;
     background-color: #8eafd8;
-    margin-top: 15px;
+    /* margin-top: 15px; */
     margin-bottom: 5px;
+    margin-right: 20px;
     border: 1px;
+}
+
+.leaveComment-form {
+    margin-top: 10px;
+    /* margin-bottom: 15px; */
+}
+
+.form-control-comment {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.newComment {
+    max-height: 80px;
+    height: 80px;
+}
+
+.editComment-icons {
+    justify-content: flex-end;
+    align-items: baseline;
+    display: flex;
+    padding: 10px;
+}
+
+.editComment-icons>button {
+    margin-right: 10px;
+}
+
+.commentForm {
+    display: inline-grid;
+    width: 100%;
+}
+
+.commentForm>input {
+    /* background-color: transparent; */
+    /* outline: none; */
+    margin-top: 10px;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    resize: none;
+}
+
+
+.commentForm>textarea {
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    resize: none;
+    width: 100%;
+}
+
+.commentForm>input:read-only,
+textarea:read-only {
+    margin-top: 0px;
+    outline: none;
+    padding: 0px;
+    border: none;
+
+}
+
+.articleComments>h3 {
+    font-weight: bold;
+    border-bottom: 4px solid #8eafd8;
+    width: 30%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.deleteComment-btn:hover {
+    background-color: #d32f2f4d !important;
+}
+
+.editComment-btn:hover {
+    background-color: #8eafd867 !important;
+}
+
+.show-editComment-buttons {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.hide-editComment-buttons {
+    margin-bottom: 0px;
 }

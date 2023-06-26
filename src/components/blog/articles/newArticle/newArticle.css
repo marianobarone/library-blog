@@ -5,6 +5,14 @@
     margin-bottom: 20px;
 }
 
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    border-bottom: 4px px solid #8eafd8;
+    width: 50%;
+    padding-bottom: 15px;
+}
+
 .newArticle-title {
     margin-top: 15px;
     margin-bottom: 15px;
@@ -58,7 +66,7 @@
 
 /* // Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
-    .newArticle-save-btn-div{
+    .newArticle-save-btn-div {
         margin-top: 50px;
     }
 }

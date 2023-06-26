@@ -38,7 +38,8 @@ export const AuthProvider = ({ children }) => {
         let result;
         await axios
             .post(
-                `https://api-library-blog.onrender.com/login/`,
+                // `https://api-library-blog.onrender.com/login/`,
+                `http://localhost:3001/login/`,
                 credentials
             )
             .then((response) => {
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
                         errorMessageLogin: error.message
                     }
                 })
-                result = error.response;
+                result = { status: error.response ? error.response.status : 500 , error: error };
             });
 
         return result;
